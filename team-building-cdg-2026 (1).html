@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Building – Contrôle de Gestion S1 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --coral: #FF6B6B; --coral-light: #FFE8E8;
+    --yellow: #FFD93D; --yellow-light: #FFF8D6;
+    --teal: #4ECDC4; --teal-light: #E0FAF8;
+    --purple: #A78BFA; --purple-light: #EDE9FE;
+    --green: #6BCB77; --green-light: #E8F8EA;
+    --bg: #FFFDF8; --text: #2D2926; --text-muted: #7C7268;
+    --card-bg: #FFFFFF; --border: #F0EDE8;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); overflow-x: hidden; }
+  body::before {
+    content: ''; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background-image:
+      radial-gradient(circle at 10% 20%, #FFD93D22 0%, transparent 40%),
+      radial-gradient(circle at 90% 10%, #FF6B6B18 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, #4ECDC422 0%, transparent 40%),
+      radial-gradient(circle at 20% 90%, #A78BFA18 0%, transparent 40%);
+    pointer-events: none; z-index: 0;
+  }
+  .container { max-width: 900px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  header { background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 50%, #FFD93D 100%); padding: 64px 24px 80px; text-align: center; position: relative; overflow: hidden; }
+  header::before { content: '🎉'; position: absolute; top: 20px; left: 8%; font-size: 32px; animation: float 3s ease-in-out infinite; }
+  header::after { content: '🎊'; position: absolute; top: 30px; right: 8%; font-size: 32px; animation: float 3.5s ease-in-out infinite reverse; }
+  .emoji-row { font-size: 28px; margin-bottom: 16px; animation: float 4s ease-in-out infinite; display: block; }
+  header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 800; color: white; line-height: 1.15; text-shadow: 0 2px 20px rgba(0,0,0,0.15); margin-bottom: 12px; }
+  header h1 span { color: #FFF8D6; }
+  .header-subtitle { color: rgba(255,255,255,0.92); font-size: 1.1rem; font-weight: 400; margin-bottom: 28px; }
+  .pill-row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+  .pill { background: rgba(255,255,255,0.25); color: white; border: 1.5px solid rgba(255,255,255,0.5); border-radius: 100px; padding: 7px 18px; font-size: 0.85rem; font-weight: 500; backdrop-filter: blur(4px); }
+
+  .wave { background: linear-gradient(135deg, #FF6B6B 0%, #FF8E53 50%, #FFD93D 100%); margin-bottom: -2px; }
+  .wave svg { display: block; }
+  main { padding: 48px 0 80px; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .section-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 24px; }
+
+  /* SYNC BAR */
+  .sync-bar { display: flex; align-items: center; gap: 8px; border-radius: 12px; padding: 10px 18px; margin-bottom: 28px; font-size: 0.84rem; font-weight: 500; background: var(--teal-light); border: 1.5px solid var(--teal); color: #0f6e56; }
+  .sync-bar.ok  { background: var(--green-light); border-color: var(--green); color: #1a6b2a; }
+  .sync-bar.err { background: var(--coral-light); border-color: var(--coral); color: #c0392b; }
+  .sync-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; background: var(--teal); }
+  .sync-bar.ok  .sync-dot { background: var(--green); }
+  .sync-bar.err .sync-dot { background: var(--coral); }
+  .sync-dot.pulse { animation: pulse 1.2s infinite; }
+
+  /* DATE */
+  #date-section { margin-bottom: 20px; display: flex; justify-content: center; }
+  .date-banner { background: var(--card-bg); border: 1.5px solid var(--teal); border-radius: 14px; padding: 10px 18px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .date-banner-left { display: flex; align-items: center; gap: 8px; }
+  .date-icon { font-size: 16px; }
+  .date-banner-title { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  .date-banner-sub { font-size: 0.82rem; color: var(--text); font-weight: 500; margin-top: 1px; }
+  .date-banner-right { display: flex; align-items: center; gap: 10px; }
+  #event-date { padding: 5px 10px; border: 1.5px solid var(--teal); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; background: var(--teal-light); color: var(--text); outline: none; cursor: pointer; }
+  .countdown-box { background: var(--teal-light); border: 1.5px solid var(--teal); border-radius: 8px; padding: 4px 12px; display: flex; align-items: center; gap: 5px; }
+  .countdown-num { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 700; color: #0F6E56; line-height: 1; }
+  .countdown-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 500; }
+  .countdown-box.past { background: var(--coral-light); border-color: var(--coral); }
+  .countdown-box.past .countdown-num { color: #c0392b; }
+
+  /* BUDGET */
+  .budget-banner { background: var(--card-bg); border: 2px solid var(--yellow); border-radius: 20px; padding: 28px 32px; margin-bottom: 48px; }
+  .budget-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 20px; margin-top: 16px; }
+  .budget-card { border-radius: 14px; padding: 18px 20px; text-align: center; background: var(--yellow-light); }
+  .budget-card.teal { background: var(--teal-light); }
+  .budget-card.coral { background: var(--coral-light); }
+  .budget-card.purple { background: var(--purple-light); }
+  .budget-label { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .budget-value { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: var(--text); line-height: 1; }
+  .budget-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* PARTICIPANTS */
+  #participants-section { margin-bottom: 48px; }
+  .stats-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+  .stat-pill { background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 100px; padding: 6px 16px; font-size: 0.82rem; font-weight: 500; display: flex; align-items: center; gap: 6px; }
+  .stat-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .participants-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; margin-bottom: 24px; }
+  .participant-card { background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 16px; padding: 16px 18px; display: flex; align-items: center; gap: 14px; transition: all 0.25s ease; }
+  .participant-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+  .participant-card.present { border-color: var(--green); background: var(--green-light); }
+  .participant-card.absent  { border-color: #FECACA; background: #FFF5F5; }
+  .avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0; }
+  .participant-info { flex: 1; min-width: 0; }
+  .participant-name { font-weight: 600; font-size: 0.95rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .rsvp-btns { display: flex; gap: 6px; align-items: center; }
+  .btn-rsvp { width: 32px; height: 32px; border-radius: 50%; border: 1.5px solid var(--border); background: white; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .btn-rsvp:hover { transform: scale(1.1); }
+  .btn-rsvp.yes.active { background: var(--green); border-color: var(--green); }
+  .btn-rsvp.no.active  { background: #FCA5A5; border-color: #EF4444; }
+  .btn-del { width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--border); background: transparent; cursor: pointer; font-size: 10px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .btn-del:hover { background: #FFF5F5; border-color: #FECACA; color: #EF4444; }
+  .add-form { background: var(--card-bg); border: 2px dashed var(--border); border-radius: 16px; padding: 20px 24px; display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+  .form-group { flex: 1; min-width: 180px; }
+  .form-group label { font-size: 0.78rem; color: var(--text-muted); font-weight: 500; display: block; margin-bottom: 5px; }
+  .form-group input { width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; background: var(--bg); color: var(--text); outline: none; transition: border-color 0.2s; }
+  .form-group input:focus { border-color: var(--coral); }
+  .btn-add { background: var(--coral); color: white; border: none; border-radius: 10px; padding: 10px 22px; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; white-space: nowrap; }
+  .btn-add:hover { background: #e55c5c; transform: translateY(-1px); }
+
+  /* PHOTOS */
+  #photos-section { margin-bottom: 48px; }
+  .photos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px; }
+  .photo-item { border-radius: 16px; overflow: hidden; aspect-ratio: 4/3; position: relative; background: var(--border); }
+  .photo-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; cursor: pointer; }
+  .photo-item:hover img { transform: scale(1.04); }
+  .photo-delete { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+  .photo-item:hover .photo-delete { opacity: 1; }
+  .photo-upload-zone { border: 2.5px dashed var(--teal); border-radius: 16px; padding: 40px 24px; text-align: center; cursor: pointer; transition: all 0.25s; background: var(--teal-light); }
+  .photo-upload-zone:hover { background: #ccf5f2; border-color: #2da89e; }
+  .photo-upload-zone.drag-over { background: #b8f0ec; transform: scale(1.01); }
+  .upload-icon { font-size: 40px; margin-bottom: 10px; }
+  .upload-text { font-weight: 600; font-size: 1rem; color: #0F6E56; margin-bottom: 4px; }
+  .upload-sub { font-size: 0.82rem; color: var(--text-muted); }
+  #file-input { display: none; }
+
+  /* NOTES */
+  #notes-section { margin-bottom: 48px; }
+  .notes-area { background: var(--card-bg); border: 1.5px solid var(--border); border-radius: 16px; padding: 20px; min-height: 120px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--text); width: 100%; resize: vertical; outline: none; transition: border-color 0.2s; line-height: 1.7; }
+  .notes-area:focus { border-color: var(--purple); }
+  .notes-hint { font-size: 0.75rem; color: var(--text-muted); margin-top: 6px; }
+
+  footer { text-align: center; padding: 32px; color: var(--text-muted); font-size: 0.82rem; border-top: 1px solid var(--border); }
+  .lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 12px; }
+  .lightbox-close { position: absolute; top: 20px; right: 24px; background: white; border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+  @keyframes float   { 0%,100% { transform: translateY(0); }  50% { transform: translateY(-10px); } }
+  @keyframes fadeIn  { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  @keyframes pulse   { 0%,100% { opacity:1; } 50% { opacity:0.3; } }
+  .fade-in { animation: fadeIn 0.4s ease forwards; }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.7rem; }
+    .budget-grid { grid-template-columns: 1fr 1fr; }
+    .participants-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="emoji-row">🏆 ✨ 🎯</span>
+  <h1>Team Building<br><span>Contrôle de Gestion</span></h1>
+  <p class="header-subtitle">Premier semestre 2026 · Ensemble, on va loin !</p>
+  <div class="pill-row">
+    <span class="pill">📅 S1 2026</span>
+    <span class="pill">💼 Contrôle de Gestion</span>
+    <span class="pill" id="header-pill">🎊 À venir</span>
+  </div>
+</header>
+
+<div class="wave">
+  <svg viewBox="0 0 900 50" preserveAspectRatio="none" height="50" width="100%">
+    <path d="M0,30 C150,55 350,5 500,30 C650,55 800,10 900,25 L900,50 L0,50 Z" fill="#FFFDF8"/>
+  </svg>
+</div>
+
+<main>
+  <div class="container">
+
+    <div class="sync-bar" id="sync-bar">
+      <span class="sync-dot pulse" id="sync-dot"></span>
+      <span id="sync-text">Connexion à Firebase en cours…</span>
+    </div>
+
+    <!-- DATE -->
+    <section id="date-section">
+      <div class="date-banner">
+        <div class="date-banner-left">
+          <span class="date-icon">📅</span>
+          <div>
+            <div class="date-banner-title">Date de l'événement</div>
+            <div class="date-banner-sub" id="date-display">Aucune date sélectionnée</div>
+          </div>
+        </div>
+        <div class="date-banner-right">
+          <input type="date" id="event-date" onchange="saveDate()" />
+          <div class="countdown-box" id="countdown-box" style="display:none">
+            <span class="countdown-num" id="countdown-num">—</span>
+            <span class="countdown-label" id="countdown-label">jours restants</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BUDGET -->
+    <section id="budget-section">
+      <div class="budget-banner">
+        <div class="section-title">💰 Budget de l'événement</div>
+        <p class="section-desc">Tarif : 25 € TTC par personne présente</p>
+        <div class="budget-grid">
+          <div class="budget-card">
+            <div class="budget-label">Total participants</div>
+            <div class="budget-value" id="total-count">0</div>
+            <div class="budget-sub">personnes inscrites</div>
+          </div>
+          <div class="budget-card teal">
+            <div class="budget-label">Présents confirmés</div>
+            <div class="budget-value" id="present-count">0</div>
+            <div class="budget-sub">réponses ✅</div>
+          </div>
+          <div class="budget-card coral">
+            <div class="budget-label">Budget total</div>
+            <div class="budget-value" id="budget-total">0 €</div>
+            <div class="budget-sub">si tout le monde vient</div>
+          </div>
+          <div class="budget-card purple">
+            <div class="budget-label">Budget confirmé</div>
+            <div class="budget-value" id="budget-present">0 €</div>
+            <div class="budget-sub">basé sur les présents</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PARTICIPANTS -->
+    <section id="participants-section">
+      <div class="section-title">👥 Participants & RSVP</div>
+      <p class="section-desc">Cliquez sur ✅ ou ❌ pour indiquer votre présence</p>
+      <div class="stats-row">
+        <div class="stat-pill"><span class="stat-dot" style="background:#6BCB77;"></span><span id="stat-yes">0 présent(s)</span></div>
+        <div class="stat-pill"><span class="stat-dot" style="background:#FCA5A5;"></span><span id="stat-no">0 absent(s)</span></div>
+        <div class="stat-pill"><span class="stat-dot" style="background:#D3D1C7;"></span><span id="stat-pending">0 en attente</span></div>
+      </div>
+      <div class="participants-grid" id="participants-list"></div>
+      <div class="add-form">
+        <div class="form-group">
+          <label>Prénom & Nom</label>
+          <input type="text" id="new-name" placeholder="ex : Sophie Martin" onkeydown="if(event.key==='Enter') addParticipant()" />
+        </div>
+        <button class="btn-add" onclick="addParticipant()">+ Ajouter</button>
+      </div>
+    </section>
+
+    <!-- PHOTOS -->
+    <section id="photos-section">
+      <div class="section-title">📸 Galerie photos</div>
+      <p class="section-desc">Partagez vos souvenirs et moments du team building !</p>
+      <div class="photos-grid" id="photos-grid"></div>
+      <div class="photo-upload-zone" id="drop-zone" onclick="document.getElementById('file-input').click()">
+        <div class="upload-icon">🖼️</div>
+        <div class="upload-text">Cliquez ou glissez vos photos ici</div>
+        <div class="upload-sub">JPG, PNG, GIF, WebP · Photos partagées avec toute l'équipe</div>
+      </div>
+      <input type="file" id="file-input" accept="image/*" multiple onchange="handleFiles(this.files)">
+    </section>
+
+    <!-- NOTES -->
+    <section id="notes-section">
+      <div class="section-title">📝 Notes & Organisation</div>
+      <p class="section-desc">Idées d'activités, logistique, informations pratiques…</p>
+      <textarea class="notes-area" id="notes-area"
+        placeholder="💡 Idées d'activités : escape game, atelier cuisine, activité sportive...&#10;📍 Lieu envisagé : ...&#10;🕐 Heure de rendez-vous : ...&#10;🚌 Transport : ..."
+        oninput="scheduleNoteSave()"></textarea>
+      <p class="notes-hint" id="notes-hint">Notes partagées avec toute l'équipe en temps réel.</p>
+    </section>
+
+  </div>
+</main>
+
+<footer>
+  <div class="container">
+    <p>Team Building · Contrôle de Gestion · Semestre 1 — 2026 🎉</p>
+    <p style="margin-top: 6px;">Page créée avec ❤️ pour souder l'équipe</p>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<script type="module">
+import { initializeApp }   from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+import { getDatabase, ref, set, onValue, push, remove, update }
+  from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js';
+
+// ── CONFIG ───────────────────────────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyDscSNEBTlRyBeCdM8nFu_qJqqUWbLJt4U",
+  authDomain:        "team-building-cdg.firebaseapp.com",
+  databaseURL:       "https://team-building-cdg-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId:         "team-building-cdg",
+  storageBucket:     "team-building-cdg.firebasestorage.app",
+  messagingSenderId: "700106913954",
+  appId:             "1:700106913954:web:ca341abdbab4713aa57ffb"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+// ── CONSTANTES ───────────────────────────────────────────────────────────────
+const PRICE = 25;
+const COLORS = [
+  {bg:'#FFE8E8',fg:'#c0392b'},{bg:'#E8F8EA',fg:'#1a6b2a'},
+  {bg:'#EDE9FE',fg:'#5b21b6'},{bg:'#FFF8D6',fg:'#92610a'},
+  {bg:'#E0FAF8',fg:'#0f6e56'},{bg:'#FBEAF0',fg:'#993556'},
+  {bg:'#E6F1FB',fg:'#185fa5'},{bg:'#FAEEDA',fg:'#854f0b'},
+];
+const MONTHS_FR = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+const DAYS_FR   = ['dimanche','lundi','mardi','mercredi','jeudi','vendredi','samedi'];
+
+// ── SYNC BAR ─────────────────────────────────────────────────────────────────
+function setSynced() {
+  const b = document.getElementById('sync-bar');
+  b.className = 'sync-bar ok';
+  b.innerHTML = '<span class="sync-dot"></span><span>🔥 Connecté à Firebase · Données partagées en temps réel avec toute l\'équipe</span>';
+}
+function setSyncError(msg) {
+  const b = document.getElementById('sync-bar');
+  b.className = 'sync-bar err';
+  b.innerHTML = `<span class="sync-dot"></span><span>❌ Erreur Firebase : ${msg}</span>`;
+}
+
+// ── PARTICIPANTS ──────────────────────────────────────────────────────────────
+let allParticipants = {};
+const DEFAULTS = ['Marie Dupont','Lucas Bernard','Émilie Rousseau','Thomas Leclerc','Julie Moreau','Antoine Petit'];
+
+function getInitials(name) {
+  return name.trim().split(/\s+/).map(w=>w[0]?.toUpperCase()).filter(Boolean).slice(0,2).join('');
+}
+
+onValue(ref(db,'participants'), snap => {
+  setSynced();
+  allParticipants = snap.val() || {};
+  if (Object.keys(allParticipants).length === 0) {
+    DEFAULTS.forEach((name,i) => set(push(ref(db,'participants')), {name, status:null, colorIdx:i}));
+    return;
+  }
+  renderParticipants(allParticipants);
+}, err => setSyncError(err.message));
+
+function renderParticipants(data) {
+  const grid = document.getElementById('participants-list');
+  grid.innerHTML = '';
+  Object.entries(data).forEach(([key,p]) => {
+    const col = COLORS[(p.colorIdx ?? 0) % COLORS.length];
+    const s   = p.status || null;
+    const card = document.createElement('div');
+    card.className = 'participant-card' + (s==='yes' ? ' present' : s==='no' ? ' absent' : '') + ' fade-in';
+    card.innerHTML = `
+      <div class="avatar" style="background:${col.bg};color:${col.fg}">${getInitials(p.name)}</div>
+      <div class="participant-info"><div class="participant-name">${p.name}</div></div>
+      <div class="rsvp-btns">
+        <button class="btn-rsvp yes${s==='yes'?' active':''}" title="Présent" onclick="window.setRSVP('${key}','yes')">✅</button>
+        <button class="btn-rsvp no${s==='no'?' active':''}"   title="Absent"  onclick="window.setRSVP('${key}','no')">❌</button>
+        <button class="btn-del" title="Supprimer"             onclick="window.delP('${key}')">✕</button>
+      </div>`;
+    grid.appendChild(card);
+  });
+  updateStats(Object.values(data));
+}
+
+window.setRSVP = (key, status) => {
+  const cur = allParticipants[key]?.status;
+  update(ref(db,'participants/'+key), {status: cur===status ? null : status});
+};
+window.delP = key => remove(ref(db,'participants/'+key));
+window.addParticipant = () => {
+  const name = document.getElementById('new-name').value.trim();
+  if (!name) { document.getElementById('new-name').focus(); return; }
+  set(push(ref(db,'participants')), {name, status:null, colorIdx: Object.keys(allParticipants).length % COLORS.length});
+  document.getElementById('new-name').value = '';
+};
+
+function updateStats(list) {
+  const yes = list.filter(p=>p.status==='yes').length;
+  const no  = list.filter(p=>p.status==='no').length;
+  document.getElementById('stat-yes').textContent     = yes + ' présent'+(yes>1?'s':'');
+  document.getElementById('stat-no').textContent      = no  + ' absent'+(no>1?'s':'');
+  document.getElementById('stat-pending').textContent = list.filter(p=>!p.status).length + ' en attente';
+  document.getElementById('total-count').textContent   = list.length;
+  document.getElementById('present-count').textContent = yes;
+  document.getElementById('budget-total').textContent   = (list.length * PRICE).toLocaleString('fr-FR') + ' €';
+  document.getElementById('budget-present').textContent = (yes * PRICE).toLocaleString('fr-FR') + ' €';
+}
+
+// ── NOTES ────────────────────────────────────────────────────────────────────
+let noteTimer = null;
+onValue(ref(db,'notes'), snap => {
+  const val = snap.val() || '';
+  const ta  = document.getElementById('notes-area');
+  if (document.activeElement !== ta) ta.value = val;
+});
+window.scheduleNoteSave = () => {
+  document.getElementById('notes-hint').textContent = '⏳ Sauvegarde en cours…';
+  clearTimeout(noteTimer);
+  noteTimer = setTimeout(() => {
+    set(ref(db,'notes'), document.getElementById('notes-area').value);
+    document.getElementById('notes-hint').textContent = '✅ Notes sauvegardées et partagées avec l\'équipe.';
+  }, 1200);
+};
+
+// ── DATE ─────────────────────────────────────────────────────────────────────
+onValue(ref(db,'eventDate'), snap => {
+  const val = snap.val();
+  if (val) { document.getElementById('event-date').value = val; updateDateDisplay(); }
+});
+window.saveDate = () => {
+  set(ref(db,'eventDate'), document.getElementById('event-date').value);
+  updateDateDisplay();
+};
+function updateDateDisplay() {
+  const val  = document.getElementById('event-date').value;
+  const disp = document.getElementById('date-display');
+  const box  = document.getElementById('countdown-box');
+  const num  = document.getElementById('countdown-num');
+  const lbl  = document.getElementById('countdown-label');
+  const pill = document.getElementById('header-pill');
+  if (!val) { disp.textContent='Aucune date sélectionnée'; box.style.display='none'; pill.textContent='🎊 À venir'; return; }
+  const [y,m,d] = val.split('-').map(Number);
+  const date = new Date(y,m-1,d);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const diff  = Math.round((date-today)/86400000);
+  disp.textContent = DAYS_FR[date.getDay()]+' '+d+' '+MONTHS_FR[m-1]+' '+y;
+  box.style.display = 'flex';
+  box.className = 'countdown-box'+(diff<0?' past':'');
+  if (diff===0)      { num.textContent='🎉'; lbl.textContent="C'est aujourd'hui !"; pill.textContent="🎊 Aujourd'hui !"; }
+  else if (diff>0)   { num.textContent=diff; lbl.textContent='jour'+(diff>1?'s':'')+' restant'+(diff>1?'s':''); pill.textContent='🎊 Dans '+diff+' jour'+(diff>1?'s':''); }
+  else               { num.textContent=Math.abs(diff); lbl.textContent='jour'+(Math.abs(diff)>1?'s':'')+' passé'+(Math.abs(diff)>1?'s':''); pill.textContent='✅ Passé'; }
+}
+
+// ── PHOTOS (base64 compressé → Realtime DB) ───────────────────────────────────
+onValue(ref(db,'photos'), snap => {
+  const data = snap.val() || {};
+  const grid = document.getElementById('photos-grid');
+  grid.innerHTML = '';
+  Object.entries(data).forEach(([key,p]) => {
+    const div = document.createElement('div');
+    div.className = 'photo-item fade-in';
+    div.innerHTML = `
+      <img src="${p.src}" alt="${p.name}" onclick="window.openLightbox('${p.src}')">
+      <button class="photo-delete" onclick="window.delPhoto('${key}',event)">✕</button>`;
+    grid.appendChild(div);
+  });
+});
+
+window.handleFiles = files => {
+  Array.from(files).forEach(file => {
+    if (!file.type.startsWith('image/')) return;
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const MAX = 900;
+      let w = img.width, h = img.height;
+      if (w > MAX) { h = Math.round(h*MAX/w); w = MAX; }
+      if (h > MAX) { w = Math.round(w*MAX/h); h = MAX; }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      const src = canvas.toDataURL('image/jpeg', 0.72);
+      URL.revokeObjectURL(url);
+      set(push(ref(db,'photos')), {src, name: file.name});
+    };
+    img.src = url;
+  });
+};
+window.delPhoto = (key, e) => { e.stopPropagation(); remove(ref(db,'photos/'+key)); };
+
+// ── LIGHTBOX ─────────────────────────────────────────────────────────────────
+window.openLightbox = src => { document.getElementById('lightbox-img').src=src; document.getElementById('lightbox').classList.add('open'); };
+window.closeLightbox = () => document.getElementById('lightbox').classList.remove('open');
+
+// ── DRAG & DROP ───────────────────────────────────────────────────────────────
+const dz = document.getElementById('drop-zone');
+dz.addEventListener('dragover',  e => { e.preventDefault(); dz.classList.add('drag-over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('drag-over'));
+dz.addEventListener('drop', e => { e.preventDefault(); dz.classList.remove('drag-over'); window.handleFiles(e.dataTransfer.files); });
+</script>
+</body>
+</html>
